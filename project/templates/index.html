@@ -19,6 +19,7 @@
     <a class="btn btn-success" role="button" href="{{ url_for('login') }}">log in</a>
     <a class="btn btn-success" role="button" href="{{ url_for('new_user') }}">new user</a>
     {% else %}
+    <a class="btn btn-info" role="button" href="{{ url_for('view_profile', viewed_user=session.active_user) }}">Profile - {{ session.active_user }}</a>
     <a class="btn btn-warning" role="button" href="{{ url_for('logout') }}">log out</a>
     {% endif %}
 
@@ -48,12 +49,14 @@
     {% endif %}
 
     <br />
+    <hr>
 
     <ul class="entries">
       {% for entry in entries %}
       <li class="entry">
         <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
-        {{ entry.text|safe }}
+        <i>By: <a href="{{ url_for('view_profile', viewed_user=entry.author) }}">{{ entry.author }}</a></i>
+        <p>{{ entry.text|safe }}</p>
       </li>
       {% else %}
       <li><em>No entries yet. Add some!</em></li>
