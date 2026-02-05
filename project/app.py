@@ -36,7 +36,7 @@ def add_entry():
     """Adds new post to the database."""
     if not session.get("logged_in"):
         abort(401)
-    new_entry = models.Post(request.form["title"], request.form["text"])
+    new_entry = models.Post(request.form["title"], request.form["text"], session.get("active_user"))
     db.session.add(new_entry)
     db.session.commit()
     flash("New entry was successfully posted")
@@ -53,6 +53,7 @@ def login():
             error = "Invalid username or password"
         else:
             session["logged_in"] = True
+            session["active_user"] = user.name
             flash("You were logged in")
             return redirect(url_for("index"))
     return render_template("login.html", error=error)
@@ -65,6 +66,7 @@ def new_user():
             db.session.add(newuser)
             db.session.commit()
             session["logged_in"] = True
+            session["active_user"] = user.name
             flash("New User Created")
             return redirect(url_for("index"))
         except Exception as e:
@@ -76,6 +78,7 @@ def new_user():
 def logout():
     """User logout/authentication/session management."""
     session.pop("logged_in", None)
+    session.pop("active_user", None)
     flash("You were logged out")
     return redirect(url_for("index"))
 
@@ -107,3 +110,14 @@ def search():
 
 if __name__ == "__main__":
     app.run()
+
+
+@app.route("/profile/<string:viewed_user>")
+def view_profile(viewed_user):
+    queried_user = db.session.query(models.User).filter_by(name=viewed_user).first()
+    if not queried_user:
+        flash("User \"%s\" does not exist" % viewed_user)
+        return redirect(url_for("index"))
+            
+    entries = db.session.query(models.Post).filter_by(author=queried_user.name)
+    return render_template("userpage.html", user=queried_user, entries=entries)
