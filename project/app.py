@@ -55,6 +55,9 @@ def login():
             session["logged_in"] = True
             session["active_user"] = user.name
             flash("You were logged in")
+            ### Please work
+            ### Trying using "username" from login fuction instead of models.User(request.form["name"]
+            session["username"] = user.name # does it have to be this due to the model python?
             return redirect(url_for("index"))
     return render_template("login.html", error=error)
 
@@ -62,12 +65,26 @@ def login():
 def new_user():
     if request.method == "POST" and request.form.get("password") and request.form.get("username"):
         newuser = models.User(request.form["username"], request.form["password"])
+        #This whole next few lines are a test to prevent from using the same name
+        #Because I kept getting an error with "jacobbauch3"
+        #variable define error, trying to fix that
+        blehh = request.form["username"]
+        #okay from copying below, let's check
+        namecheck = db.session.query(models.User).filter_by(name=blehh).first()
+        if namecheck:
+            return render_template("newuser.html", error="Error, username in use already")
+        # IT works! :D
+
         try:
             db.session.add(newuser)
             db.session.commit()
             session["logged_in"] = True
             session["active_user"] = user.name
             flash("New User Created")
+            #Have to add a thing here too or else new users wouldn't have a display name
+            #I have messed up here somehow with user.name again ... 
+            session["username"] = newuser.name 
+            #Does it need to be newuser.name because of the template newuser.html? May as well test
             return redirect(url_for("index"))
         except Exception as e:
             return render_template("newuser.html", error="Error when adding user: " + str(e))
