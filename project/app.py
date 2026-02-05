@@ -49,7 +49,7 @@ def login():
     error = None
     if request.method == "POST":
         user = db.session.query(models.User).filter_by(name=request.form["username"]).first()
-        if  not user or user.password != request.form["password"]:
+        if not user or not user.check_password(request.form["password"]):
             error = "Invalid username or password"
         else:
             session["logged_in"] = True
