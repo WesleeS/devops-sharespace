@@ -13,15 +13,6 @@
     <h1>ShareSpace</h1>
     <br /><br />
 
-    <!-- I think I want the username to show up under ShareSpace, but above buttons-->
-    <!-- I'm being dumb and this b-->
-    {% if session.logged_in %}
-    <p> You are logged in as {{ session.username }}!</p> 
-    <!-- Period instead of brackets? -->
-    {% else %}
-    <!-- May not need to add anything here -->
-    {% endif %}
-
     <a class="btn btn-info" role="button" href="{{ url_for('search') }}">Search</a>
 
     {% if not session.logged_in %}
