@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+
+# Version Control
+.git/
+.gitignore
+
+# IDE
+.idea/
+
+# Testing
+.pytest_cache/
+tests/
+
+# Database
+**/*.db
+project/shareSpace.db
+
+# Documentation
+README.md
+LICENSE
+
+# Docker
+Dockerfile
+.dockerignore
+
+# macOS
+*.DS_Store
